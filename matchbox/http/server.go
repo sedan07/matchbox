@@ -47,7 +47,7 @@ func (s *Server) HTTPHandler() http.Handler {
 	mux := http.NewServeMux()
 
 	chain := func(next http.Handler) http.Handler {
-		return s.countRequest(next)
+		return s.logRequest(s.countRequest(next))
 	}
 	mux.Handle("/metrics", promhttp.Handler())
 	// matchbox version
