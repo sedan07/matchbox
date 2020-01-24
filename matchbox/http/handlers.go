@@ -6,6 +6,15 @@ import (
 
 	"github.com/poseidon/matchbox/matchbox/server"
 	pb "github.com/poseidon/matchbox/matchbox/server/serverpb"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+)
+
+var (
+	requestsMetric = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "matchbox_requests",
+		Help: "The total number of processed events",
+	},[]string{"path"})
 )
 
 // homeHandler shows the server name for rooted requests. Otherwise, a 404 is
@@ -25,6 +34,15 @@ func homeHandler() http.Handler {
 func (s *Server) logRequest(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		s.logger.Infof("HTTP %s %v", req.Method, req.URL)
+		next.ServeHTTP(w, req)
+	}
+	return http.HandlerFunc(fn)
+}
+
+// countRequest increments Prom metric for given path
+func (s *Server) countRequest(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		requestsMetric.WithLabelValues(req.URL.Path).Inc()
 		next.ServeHTTP(w, req)
 	}
 	return http.HandlerFunc(fn)

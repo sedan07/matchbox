@@ -7,6 +7,8 @@ import (
 
 	"github.com/poseidon/matchbox/matchbox/server"
 	"github.com/poseidon/matchbox/matchbox/sign"
+	// "github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // Config configures a Server.
@@ -45,8 +47,9 @@ func (s *Server) HTTPHandler() http.Handler {
 	mux := http.NewServeMux()
 
 	chain := func(next http.Handler) http.Handler {
-		return s.logRequest(next)
+		return s.countRequest(next)
 	}
+	mux.Handle("/metrics", promhttp.Handler())
 	// matchbox version
 	mux.Handle("/", s.logRequest(homeHandler()))
 	// Boot via GRUB

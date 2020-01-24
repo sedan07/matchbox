@@ -2,8 +2,12 @@
 github.com/ajeddeloh/go-json
 # github.com/ajeddeloh/yaml v0.0.0-20170912190910-6b94386aeefd
 github.com/ajeddeloh/yaml
-# github.com/alecthomas/units v0.0.0-20150109002421-6b4e7dc5e314
+# github.com/alecthomas/units v0.0.0-20190717042225-c3de453c63f4
 github.com/alecthomas/units
+# github.com/beorn7/perks v1.0.1
+github.com/beorn7/perks/quantile
+# github.com/cespare/xxhash/v2 v2.1.1
+github.com/cespare/xxhash/v2
 # github.com/coreos/container-linux-config-transpiler v0.9.0
 github.com/coreos/container-linux-config-transpiler/config
 github.com/coreos/container-linux-config-transpiler/config/astyaml
@@ -51,8 +55,25 @@ github.com/golang/protobuf/ptypes/timestamp
 github.com/inconshreveable/mousetrap
 # github.com/konsorten/go-windows-terminal-sequences v1.0.2
 github.com/konsorten/go-windows-terminal-sequences
+# github.com/matttproud/golang_protobuf_extensions v1.0.1
+github.com/matttproud/golang_protobuf_extensions/pbutil
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
+# github.com/prometheus/client_golang v1.3.0
+github.com/prometheus/client_golang/prometheus
+github.com/prometheus/client_golang/prometheus/internal
+github.com/prometheus/client_golang/prometheus/promauto
+github.com/prometheus/client_golang/prometheus/promhttp
+# github.com/prometheus/client_model v0.1.0
+github.com/prometheus/client_model/go
+# github.com/prometheus/common v0.7.0
+github.com/prometheus/common/expfmt
+github.com/prometheus/common/internal/bitbucket.org/ww/goautoneg
+github.com/prometheus/common/model
+# github.com/prometheus/procfs v0.0.8
+github.com/prometheus/procfs
+github.com/prometheus/procfs/internal/fs
+github.com/prometheus/procfs/internal/util
 # github.com/sirupsen/logrus v1.4.2
 github.com/sirupsen/logrus
 github.com/sirupsen/logrus/hooks/test
@@ -66,7 +87,7 @@ github.com/stretchr/testify/assert
 github.com/vincent-petithory/dataurl
 # go4.org v0.0.0-20160314031811-03efcb870d84
 go4.org/errorutil
-# golang.org/x/crypto v0.0.0-20191122220453-ac88ee75c92c
+# golang.org/x/crypto v0.0.0-20200117160349-530e935923ad
 golang.org/x/crypto/cast5
 golang.org/x/crypto/openpgp
 golang.org/x/crypto/openpgp/armor
@@ -82,8 +103,9 @@ golang.org/x/net/http2/hpack
 golang.org/x/net/idna
 golang.org/x/net/internal/timeseries
 golang.org/x/net/trace
-# golang.org/x/sys v0.0.0-20191120155948-bd437916bb0e
+# golang.org/x/sys v0.0.0-20191220142924-d4481acd189f
 golang.org/x/sys/unix
+golang.org/x/sys/windows
 # golang.org/x/text v0.3.2
 golang.org/x/text/secure/bidirule
 golang.org/x/text/transform

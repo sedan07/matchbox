@@ -21,6 +21,7 @@ initrd {{$element}}
 boot
 `))
 
+
 // ipxeInspect returns a handler that responds with the iPXE script to gather
 // client machine data and chainload to the ipxeHandler.
 func ipxeInspect() http.Handler {
