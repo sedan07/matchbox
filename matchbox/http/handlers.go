@@ -3,6 +3,7 @@ package http
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/poseidon/matchbox/matchbox/server"
 	pb "github.com/poseidon/matchbox/matchbox/server/serverpb"
@@ -14,7 +15,7 @@ var (
 	requestsMetric = promauto.NewCounterVec(prometheus.CounterOpts{
 		Name: "matchbox_requests",
 		Help: "The total number of processed events",
-	},[]string{"path"})
+	}, []string{"path", "status_code"})
 )
 
 // homeHandler shows the server name for rooted requests. Otherwise, a 404 is
@@ -42,8 +43,11 @@ func (s *Server) logRequest(next http.Handler) http.Handler {
 // countRequest increments Prom metric for given path
 func (s *Server) countRequest(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
-		requestsMetric.WithLabelValues(req.URL.Path).Inc()
-		next.ServeHTTP(w, req)
+		respWriter := &responseLogger{w: w, status: http.StatusOK}
+
+		next.ServeHTTP(respWriter, req)
+		status := strconv.Itoa(respWriter.Status())
+		requestsMetric.WithLabelValues(req.URL.Path, status).Inc()
 	}
 	return http.HandlerFunc(fn)
 }
