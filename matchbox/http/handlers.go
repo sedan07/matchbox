@@ -14,8 +14,12 @@ import (
 var (
 	requestsMetric = promauto.NewCounterVec(prometheus.CounterOpts{
 		Name: "matchbox_requests",
-		Help: "The total number of processed events",
-	}, []string{"path", "status_code"})
+		Help: "The total number of requests by path and status",
+	}, []string{"path", "status"})
+	signatureRequestsMetric = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "matchbox_signature_requests",
+		Help: "The total number signature requests",
+	}, []string{"status"})
 )
 
 // homeHandler shows the server name for rooted requests. Otherwise, a 404 is
@@ -27,6 +31,14 @@ func homeHandler() http.Handler {
 			return
 		}
 		fmt.Fprintf(w, "matchbox\n")
+	}
+	return http.HandlerFunc(fn)
+}
+
+// healthHandler returns "ok" to provide a health check endpoint
+func healthHandler() http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		fmt.Fprintf(w, "ok")
 	}
 	return http.HandlerFunc(fn)
 }
@@ -48,6 +60,18 @@ func (s *Server) countRequest(next http.Handler) http.Handler {
 		next.ServeHTTP(respWriter, req)
 		status := strconv.Itoa(respWriter.Status())
 		requestsMetric.WithLabelValues(req.URL.Path, status).Inc()
+	}
+	return http.HandlerFunc(fn)
+}
+
+// countSignatureRequest increments Prom metric for given path
+func (s *Server) countSignatureRequest(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		respWriter := &responseLogger{w: w, status: http.StatusOK}
+
+		next.ServeHTTP(respWriter, req)
+		status := strconv.Itoa(respWriter.Status())
+		signatureRequestsMetric.WithLabelValues(status).Inc()
 	}
 	return http.HandlerFunc(fn)
 }

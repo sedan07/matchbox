@@ -52,6 +52,8 @@ func (s *Server) HTTPHandler() http.Handler {
 	mux.Handle("/metrics", promhttp.Handler())
 	// matchbox version
 	mux.Handle("/", s.logRequest(homeHandler()))
+	// health
+	mux.Handle("/healthz", healthHandler())
 	// Boot via GRUB
 	mux.Handle("/grub", chain(s.selectProfile(s.core, s.grubHandler())))
 	// Boot via iPXE
@@ -70,7 +72,7 @@ func (s *Server) HTTPHandler() http.Handler {
 	// Signatures
 	if s.signer != nil {
 		signerChain := func(next http.Handler) http.Handler {
-			return s.logRequest(sign.SignatureHandler(s.signer, next))
+			return s.logRequest(s.countSignatureRequest(sign.SignatureHandler(s.signer, next)))
 		}
 		mux.Handle("/grub.sig", signerChain(s.selectProfile(s.core, s.grubHandler())))
 		mux.Handle("/boot.ipxe.sig", signerChain(ipxeInspect()))
@@ -83,7 +85,7 @@ func (s *Server) HTTPHandler() http.Handler {
 	}
 	if s.armoredSigner != nil {
 		signerChain := func(next http.Handler) http.Handler {
-			return s.logRequest(sign.SignatureHandler(s.armoredSigner, next))
+			return s.logRequest(s.countSignatureRequest(sign.SignatureHandler(s.armoredSigner, next)))
 		}
 		mux.Handle("/grub.asc", signerChain(s.selectProfile(s.core, s.grubHandler())))
 		mux.Handle("/boot.ipxe.asc", signerChain(ipxeInspect()))
